@@ -23,7 +23,10 @@ func main() {
 	env := getEnv("ENV", "dev")
 
 	// Initialize logger
-	logger.InitLogger(lokiURL, appName, env)
+	if err := logger.InitLogger(lokiURL, appName, env); err != nil {
+		logger.Log.Fatalf("Failed to initialize logger: %v", err)
+	}
+	defer logger.Close()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/hello", handler.HelloHandler)
